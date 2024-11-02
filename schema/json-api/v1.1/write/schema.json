@@ -1,0 +1,175 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "JSON:API Schema",
+  "description": "This is a schema for request write in the JSON:API format. For more, see http://jsonapi.org",
+  "$ref": "#/definitions/write",
+
+  "definitions": {
+    "write": {
+      "type": "object",
+      "required": [
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/data"
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        },
+        "jsonapi": {
+          "$ref": "#/definitions/jsonapi"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "meta": {
+      "description": "Non-standard meta-information that can not be represented as an attribute or relationship.",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "data": {
+      "description": "The document's \"primary data\" is a representation of the resource targeted by a request.",
+      "$ref": "#/definitions/resource"
+    },
+    "resource": {
+      "description": "\"Resource objects\" appear in a JSON:API document to represent resources.",
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "attributes": {
+          "$ref": "#/definitions/attributes"
+        },
+        "relationships": {
+          "$ref": "#/definitions/relationships"
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "attributes": {
+      "description": "Members of the attributes object (\"attributes\") represent information about the resource object in which it's defined.",
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9](?:[-\\w]*[a-zA-Z0-9])?$": {
+          "description": "Attributes may contain any valid JSON value."
+        }
+      },
+      "not": {
+        "anyOf": [
+          {"required": ["relationships"]},
+          {"required": ["id"]},
+          {"required": ["type"]}
+        ]
+      },
+      "additionalProperties": false
+    },
+
+    "relationships": {
+      "description": "Members of the relationships object (\"relationships\") represent references from the resource object in which it's defined to other resource objects.",
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z0-9](?:[-\\w]*[a-zA-Z0-9])?$": {
+          "properties": {
+            "data": {
+              "description": "Member, whose value represents \"resource linkage\".",
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/relationshipToOne"
+                },
+                {
+                  "$ref": "#/definitions/relationshipToMany"
+                }
+              ]
+            },
+            "meta": {
+              "$ref": "#/definitions/meta"
+            }
+          },
+          "anyOf": [
+            {"required": ["data"]},
+            {"required": ["meta"]}
+          ],
+          "not": {
+            "anyOf": [
+              {"required": ["id"]},
+              {"required": ["type"]}
+            ]
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "relationshipToOne": {
+      "description": "References to other resource objects in a to-one (\"relationship\"). Relationships can be specified by including a member in a resource's links object.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/empty"
+        },
+        {
+          "$ref": "#/definitions/linkage"
+        }
+      ]
+    },
+    "relationshipToMany": {
+      "description": "An array of objects each containing \"type\" and \"id\" members for to-many relationships.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/linkage"
+      },
+      "uniqueItems": true
+    },
+    "empty": {
+      "description": "Describes an empty to-one relationship.",
+      "type": "null"
+    },
+    "linkage": {
+      "description": "The \"type\" and \"id\" to non-empty members.",
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "jsonapi": {
+      "description": "An object describing the server's implementation",
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

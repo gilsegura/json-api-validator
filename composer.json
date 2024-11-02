@@ -1,0 +1,30 @@
+{
+    "name": "gilsegura/json-api-validator",
+    "description": "This is a project providing infrastructure for validating JSON:API requests.",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.3",
+        "gilsegura/psr7-validator": "dev-main",
+        "gilsegura/serializer": "dev-main",
+        "gilsegura/json-api": "dev-main"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.49",
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.10",
+        "rector/rector": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "JSONAPIValidator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JSONAPIValidator\\Tests\\": "tests/"
+        }
+    }
+}

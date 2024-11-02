@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "JSON:API Schema",
+  "description": "This is a schema for request related write in the JSON:API format. For more, see http://jsonapi.org",
+  "$ref": "#/definitions/related",
+
+  "definitions": {
+    "related": {
+      "type": "object",
+      "required": [
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/data"
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        },
+        "jsonapi": {
+          "$ref": "#/definitions/jsonapi"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "meta": {
+      "description": "Non-standard meta-information that can not be represented as an attribute or relationship.",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "data": {
+      "description": "The document's \"primary data\" is a representation of the relationships object (\"relationships\") represent references from the resource object in which it's defined to other resource objects.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/relationshipToOne"
+        },
+        {
+          "$ref": "#/definitions/relationshipToMany"
+        }
+      ]
+    },
+
+    "relationshipToOne": {
+      "description": "References to other resource objects in a to-one (\"relationship\"). Relationships can be specified by including a member in a resource's links object.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/empty"
+        },
+        {
+          "$ref": "#/definitions/linkage"
+        }
+      ]
+    },
+    "relationshipToMany": {
+      "description": "An array of objects each containing \"type\" and \"id\" members for to-many relationships.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/linkage"
+      },
+      "uniqueItems": true
+    },
+    "empty": {
+      "description": "Describes an empty to-one relationship.",
+      "type": "null"
+    },
+    "linkage": {
+      "description": "The \"type\" and \"id\" to non-empty members.",
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "jsonapi": {
+      "description": "An object describing the server's implementation",
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
